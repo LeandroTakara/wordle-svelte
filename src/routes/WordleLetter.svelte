@@ -5,21 +5,17 @@
 
     import { LETTERS_STATES } from '$lib/wordleGame.js'
 
-    $: getCSSclass = function() {
-        const CSSclasses = {
-            [LETTERS_STATES.CORRECT]: 'correct',
-            [LETTERS_STATES.WRONG]: 'wrong',
-            [LETTERS_STATES.WRONG_POSITION]: 'wrong-position',
-            [LETTERS_STATES.NOT_GUESSED]: 'not-guessed',
-            [LETTERS_STATES.GUESSING]: 'guessing',
-        }
-
-        return CSSclasses[state]
+    const CSSclasses = {
+        [LETTERS_STATES.CORRECT]: 'correct',
+        [LETTERS_STATES.WRONG]: 'wrong',
+        [LETTERS_STATES.WRONG_POSITION]: 'wrong-position',
+        [LETTERS_STATES.NOT_GUESSED]: 'not-guessed',
+        [LETTERS_STATES.GUESSING]: 'guessing',
     }
 </script>
 
 <div
-    class="letter {getCSSclass()}"
+    class="letter {CSSclasses[state]}"
     class:highlight
 >
     {letter}
@@ -36,10 +32,12 @@
         border: solid black 3px;
         text-transform: uppercase;
         color: white;
-        font-weight: bolder;
+        font-size: 1.2rem;
+        font-weight: 700;
 
         &.guessing {
-            border-color: rgb(255, 255, 255);
+            border-color: white;
+            background-color: rgb(82, 82, 82);
         }
         
         &.highlight::before {
@@ -52,19 +50,19 @@
         }
 
         &.not-guessed {
-            background-color: transparent;
+            background-color: rgb(65, 65, 65);
         }
 
         &.correct {
-            background-color: rgb(37, 214, 37);
+            background-color: var(--correct-color);
         }
 
         &.wrong {
-            background-color: rgb(214, 37, 37);
+            background-color: var(--wrong-color);
         }
         
         &.wrong-position {
-            background-color: rgb(214, 187, 37);
+            background-color: var(--wrong-position-color);
         }
     }
 </style>

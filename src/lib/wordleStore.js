@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import WordleGame from './wordleGame.js'
+import WordleGame, { LETTERS_STATES } from './wordleGame.js'
 
 const ROWS = 6
 const COLUMNS = 5
@@ -25,14 +25,41 @@ function createWordleStore(rows, columns, correctGuess) {
             } else if (key === ' ') {
                 wordleGame.nextEmptyColumn()
             } else if (key === 'enter') {
-                wordleGame.sendGuess()
+                if (wordleGame.currentGuessIsCompleted()) {
+                    const lastRow = wordleGame.currentRow
+
+                    wordleGame.sendGuess()
+
+                    keysMatches.update(keysMatches => {
+                        const letters = wordleGame.getGuess(lastRow)
+                        const matches = wordleGame.getGuessMatch(lastRow)
+
+                        const keyStates = {
+                            [LETTERS_STATES.NOT_GUESSED]: 0,
+                            [LETTERS_STATES.WRONG]: 1,
+                            [LETTERS_STATES.WRONG_POSITION]: 2,
+                            [LETTERS_STATES.CORRECT]: 3,
+                        }
+
+                        for (let i = 0; i < wordleGame.columns; i++) {
+                            const keyMatch = keysMatches.find(keyMatch => keyMatch.key === letters[i])
+
+                            if (keyStates[matches[i]] > keyStates[keyMatch.state]) {
+                                keyMatch.state = matches[i]
+                            }
+                        }
+
+                        return keysMatches
+                    })
+                }
             } else if (key === 'backspace') {
                 wordleGame.removeLetter()
             }
 
             set(wordleGame)
-        },
+        }
     }
 }
 
 export const wordleGame = createWordleStore(ROWS, COLUMNS, CORRECT_GUESS)
+export const keysMatches = writable(LETTERS.split('').map(key => ({ key, state: LETTERS_STATES.NOT_GUESSED })))
