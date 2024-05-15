@@ -1,6 +1,7 @@
 <script>
+    // components
     import WordleRow from './WordleRow.svelte'
-
+    // stores
     import { wordleGame } from '$lib/wordleStore.js'
 </script>
 

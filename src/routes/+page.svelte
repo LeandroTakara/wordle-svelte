@@ -1,9 +1,9 @@
 <script>
     import '../global.css'
-
+    // components
     import Wordle from './Wordle.svelte'
     import Keyboard from './Keyboard.svelte'
-
+    // stores
     import { wordleGame } from '$lib/wordleStore.js'
 
     function handleKeyAction(key) {

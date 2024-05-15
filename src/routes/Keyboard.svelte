@@ -1,9 +1,11 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-
+    // stores
     import { keysMatches } from '$lib/wordleStore.js'
+    // wordle
     import { LETTERS_STATES } from '$lib/wordleGame.js'
 
+    // maps a letter state to a CSS class
     const KEYS_STATES = {
         [LETTERS_STATES.CORRECT]: 'correct',
         [LETTERS_STATES.WRONG]: 'wrong',
@@ -101,7 +103,7 @@
         &::before {
             content: '';
             position: absolute;
-            left: 30%;
+            left: 35%;
             border-right: solid white 15px;
             border-top: solid transparent 11px;
             border-bottom: solid transparent 11px;
@@ -110,7 +112,7 @@
         &:after {
             content: '';
             position: absolute;
-            left: 44%;
+            left: 45%;
             background-color: white;
             width: 30px;
             height: 7px;

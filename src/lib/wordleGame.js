@@ -29,6 +29,8 @@ class WordleGame {
         
         this.guesses = [this.#createGuessArray()]
         this.guessesMatches = []
+
+        this.guessSent = false
     }
 
     get currentRow() {
@@ -56,6 +58,7 @@ class WordleGame {
             frequency.set(correctLetter, (frequency.get(correctLetter) || 0) + 1)
         }
 
+        // checks all the correct letters
         for (let i = 0; i < this.columns; i++) {
             const guessLetter = this.guesses[this.#currentRow][i]
 
@@ -65,6 +68,7 @@ class WordleGame {
             }
         }
 
+        // checks all the wrong or wrong-position letters
         for (let i = 0; i < this.columns; i++) {
             if (guessMatches[i] === LETTERS_STATES.CORRECT) continue
 
@@ -82,21 +86,28 @@ class WordleGame {
     }
 
     sendGuess() {
-        if (!this.currentGuessIsCompleted()) return
+        if (!this.currentGuessIsCompleted() && this.guessSent) return
 
         const guessMatches = this.#matchGuess()
         this.guessesMatches.push(guessMatches)
+        this.guessSent = true
+    }
 
-        this.#currentRow++
-        this.#currentColumn = 0
-
-        if (guessMatches.every(match => match === LETTERS_STATES.CORRECT)) {
+    #checkGameState() {
+        if (this.guessesMatches[this.guessesMatches.length - 1].every(match => match === LETTERS_STATES.CORRECT)) {
             this.gameState = GAME_STATES.WIN
         } else if (this.currentRow === this.rows) {
             this.gameState = GAME_STATES.LOSE
-        } else {
-            this.guesses.push(this.#createGuessArray())
-        }
+        }  
+    }
+
+    nextGuess() {
+        this.guessSent = false
+        this.#currentRow++
+        this.#currentColumn = 0
+        this.guesses.push(this.#createGuessArray())
+
+        this.#checkGameState()
     }
 
     currentGuessIsCompleted() {
@@ -108,7 +119,7 @@ class WordleGame {
     }
 
     getGuessMatch(row) {
-        if (this.isPlaying && row === this.#currentRow) return new Array(this.columns).fill(LETTERS_STATES.GUESSING)
+        if (this.isPlaying && row === this.#currentRow && !this.guessSent) return new Array(this.columns).fill(LETTERS_STATES.GUESSING)
         return this.guessesMatches[row] || new Array(this.columns).fill(LETTERS_STATES.NOT_GUESSED)
     }
 
@@ -132,6 +143,11 @@ class WordleGame {
         }
 
         this.guesses[this.#currentRow][this.#currentColumn] = ''
+    }
+
+    changeColumn(column) {
+        if (column < 0 || column >= this.columns) return
+        this.#currentColumn = column
     }
 
     nextColumn() {

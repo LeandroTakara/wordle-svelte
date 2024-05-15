@@ -1,19 +1,21 @@
 <script>
     export let row
-
+    // components
     import WordleLetter from './WordleLetter.svelte'
-
+    // stores
     import { wordleGame } from '$lib/wordleStore.js'
+
+    $: guess = $wordleGame.getGuess(row)
+    $: guessMatch = $wordleGame.getGuessMatch(row)
 </script>
 
 <div class="row">
     {#each { length: $wordleGame.columns } as _, column}
         {@const letter = $wordleGame.getGuess(row)[column]}
         {@const state = $wordleGame.getGuessMatch(row)[column]}
-        
-        {@const highlight = $wordleGame.isPlaying && row === $wordleGame.currentRow && column === $wordleGame.currentColumn}
+        {@const highlight = !$wordleGame.guessSent && $wordleGame.isPlaying && row === $wordleGame.currentRow && column === $wordleGame.currentColumn}
 
-        <WordleLetter {letter} {state} {highlight} />
+        <WordleLetter {letter} {state} {highlight} {column} />
     {/each}
 </div>
 
