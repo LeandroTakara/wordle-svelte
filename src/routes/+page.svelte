@@ -93,14 +93,15 @@
     }
 
     main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        position: relative;
         flex-grow: 1;
         margin: 20px 0;
     }
 
     .wordle-container {
+        position: absolute;
+        left: 50%;
+        translate: -50%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -121,6 +122,8 @@
     }
 
     .results-container {
-        align-items: center;
+        position: absolute;
+        left: 50%;
+        translate: -50%;
     }
 </style>

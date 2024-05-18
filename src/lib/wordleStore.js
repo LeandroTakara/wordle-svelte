@@ -28,7 +28,7 @@ function createWordleStore(rows, columns) {
     return {
         subscribe,
         sendKey: function(key) {
-            if (!wordleGame.isPlaying) return
+            if (!wordleGame.isPlaying || wordleGame.guessSent) return
 
             if (LETTERS.includes(key)) {
                 wordleGame.addLetter(key)

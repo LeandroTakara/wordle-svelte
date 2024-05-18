@@ -38,7 +38,7 @@
     class="letter {bgCSSClass}"
     class:revealing
     class:highlight
-    style:animation-duration='{$REVEAL_TIME}ms'
+    style:animation-duration={revealing ? $REVEAL_TIME + 'ms' : ''}
 >
     {#key letter}
         <span in:fade={{ duration: 300 }}>{letter}</span>

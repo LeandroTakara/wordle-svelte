@@ -7,13 +7,14 @@
     import { GAME_STATES } from '$lib/wordleGame.js'
 
     const message = $wordleGame.gameState === GAME_STATES.WIN ? 'YOU WIN' : 'YOU LOSE'
+    const correctGuess = $wordleGame.correctGuess
 </script>
 
 <div class="results">
     <h2>Results</h2>
     <span class="game-result">{message}</span>
 
-    <p class="game-correct-word">The word was: {$wordleGame.correctGuess}</p>
+    <p class="game-correct-word">The word was: {correctGuess}</p>
 
     <div class="mini-wordle">
         <WordleDisplay />
