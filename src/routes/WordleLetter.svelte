@@ -4,6 +4,7 @@
     export let state
     export let highlight
 
+    import { fade } from 'svelte/transition'
     // stores
     import { wordleGame, REVEAL_TIME, REVEAL_DELAY_TIME } from '$lib/wordleStore.js'
     // wordle
@@ -36,14 +37,17 @@
     class:highlight
     style:animation-duration='{$REVEAL_TIME}ms'
 >
-    <span>{letter}</span>
-    <input class="letter-button" type="button" on:click={() => wordleGame.setColumn(column)}>
+    {#key letter}
+        <span in:fade={{ duration: 300 }}>{letter}</span>
+    {/key}
+
+    {#if state === LETTERS_STATES.GUESSING}
+        <input class="letter-button" type="button" on:click={() => wordleGame.setColumn(column)}>
+    {/if}
 </div>
 
 <style>
     .letter {
-        --bg-color: transparent;
-
         position: relative;
         display: flex;
         justify-content: center;
@@ -51,7 +55,7 @@
         width: 50px;
         height: 50px;
         border: solid black 3px;
-        border-radius: 5px;
+        /* border-radius: 5px; */
         text-transform: uppercase;
         color: white;
         background-color: var(--bg-color);

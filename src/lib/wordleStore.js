@@ -1,10 +1,10 @@
 import { derived, readable, writable } from 'svelte/store'
 import WordleGame, { LETTERS_STATES } from './wordleGame.js'
+import WORDS from '../words.js'
 
 // constants
 const ROWS = 6
 const COLUMNS = 5
-const CORRECT_GUESS = 'svelt'
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'
 
 const REVEAL_TIME_MILLISECONDS = 1000
@@ -12,7 +12,15 @@ const REVEAL_DELAY_TIME_MILLISECONDS = 200
 
 const LAST_LETTER_REVEAL_MILLISECONDS = REVEAL_TIME_MILLISECONDS + REVEAL_DELAY_TIME_MILLISECONDS * (COLUMNS - 1)
 
-function createWordleStore(rows, columns, correctGuess) {
+function createWordleStore(rows, columns) {
+    function getRandomWord() {
+        return WORDS[Math.floor(Math.random() * WORDS.length)]
+    }
+
+    let timeoutNextGuess = null
+
+    const correctGuess = getRandomWord()
+
     const wordleGame = new WordleGame(rows, columns, correctGuess)
 
     const { subscribe, set } = writable(wordleGame)
@@ -31,12 +39,12 @@ function createWordleStore(rows, columns, correctGuess) {
             } else if (key === ' ') {
                 wordleGame.nextEmptyColumn()
             } else if (key === 'enter') {
-                if (!wordleGame.currentGuessIsCompleted()) return
+                if (!wordleGame.currentGuessIsCompleted() || wordleGame.guessSent) return
 
                 wordleGame.sendGuess()
 
                 // waits for some time before going to the next guess and sets which keys were matched
-                setTimeout(() => {
+                timeoutNextGuess = setTimeout(() => {
                     wordleGame.nextGuess()
                     set(wordleGame)
                 }, LAST_LETTER_REVEAL_MILLISECONDS)
@@ -49,11 +57,17 @@ function createWordleStore(rows, columns, correctGuess) {
         setColumn: function(column) {
             wordleGame.changeColumn(column)
             set(wordleGame)
+            clearTimeout(timeoutNextGuess)
+        },
+        newGame: function() {
+            wordleGame.newGame(getRandomWord())
+            set(wordleGame)
+            clearTimeout(timeoutNextGuess)
         }
     }
 }
 
-export const wordleGame = createWordleStore(ROWS, COLUMNS, CORRECT_GUESS)
+export const wordleGame = createWordleStore(ROWS, COLUMNS)
 export const keysMatches = derived(wordleGame, $wordleGame => {
     // maps how close the letter state is from the correct letter position
     const KEY_STATES = {

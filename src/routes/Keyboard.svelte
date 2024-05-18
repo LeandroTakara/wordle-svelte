@@ -25,13 +25,9 @@
         <button
             type="button"
             class="key {KEYS_STATES[state]}"
-            on:click={() => {
-                if (state === LETTERS_STATES.WRONG) return
-
-                chooseKey(key)
-            }}
+            on:click={() => chooseKey(key) }
         >
-            {key}
+            <span>{key}</span>
         </button>
     {/each}
 
@@ -69,8 +65,8 @@
         color: white;
         font-weight: 600;
         font-size: 1.2rem;
-        cursor: pointer;
         background-color: rgb(80, 80, 80);
+        transition: background-color 0.3s;
 
         &.correct {
             background-color: var(--correct-color);
@@ -86,7 +82,6 @@
 
         &.wrong {
             opacity: 0.3;
-            cursor: not-allowed;
         }
     }
 

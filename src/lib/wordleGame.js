@@ -96,18 +96,20 @@ class WordleGame {
     #checkGameState() {
         if (this.guessesMatches[this.guessesMatches.length - 1].every(match => match === LETTERS_STATES.CORRECT)) {
             this.gameState = GAME_STATES.WIN
-        } else if (this.currentRow === this.rows) {
+        } else if (this.guesses.length === this.rows) {
             this.gameState = GAME_STATES.LOSE
         }  
     }
 
     nextGuess() {
-        this.guessSent = false
-        this.#currentRow++
-        this.#currentColumn = 0
-        this.guesses.push(this.#createGuessArray())
-
         this.#checkGameState()
+
+        if (this.isPlaying) {
+            this.guessSent = false
+            this.#currentRow++
+            this.#currentColumn = 0
+            this.guesses.push(this.#createGuessArray())
+        }
     }
 
     currentGuessIsCompleted() {
@@ -121,6 +123,16 @@ class WordleGame {
     getGuessMatch(row) {
         if (this.isPlaying && row === this.#currentRow && !this.guessSent) return new Array(this.columns).fill(LETTERS_STATES.GUESSING)
         return this.guessesMatches[row] || new Array(this.columns).fill(LETTERS_STATES.NOT_GUESSED)
+    }
+
+    newGame(correctGuess) {
+        this.correctGuess = correctGuess
+        this.#currentRow = 0
+        this.#currentColumn = 0
+        this.gameState = GAME_STATES.PLAYING
+        this.guesses = [this.#createGuessArray()]
+        this.guessesMatches = []
+        this.guessSent = false
     }
 
     addLetter(letter) {

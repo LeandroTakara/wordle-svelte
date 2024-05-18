@@ -7,7 +7,7 @@
 
 <div class="game">
     {#each { length: $wordleGame.rows } as _, row}
-        <WordleRow {row} />
+        <WordleRow {row}/>
     {/each}
 </div>
 

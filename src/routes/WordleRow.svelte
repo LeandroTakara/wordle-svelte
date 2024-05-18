@@ -11,8 +11,8 @@
 
 <div class="row">
     {#each { length: $wordleGame.columns } as _, column}
-        {@const letter = $wordleGame.getGuess(row)[column]}
-        {@const state = $wordleGame.getGuessMatch(row)[column]}
+        {@const letter = guess[column]}
+        {@const state = guessMatch[column]}
         {@const highlight = !$wordleGame.guessSent && $wordleGame.isPlaying && row === $wordleGame.currentRow && column === $wordleGame.currentColumn}
 
         <WordleLetter {letter} {state} {highlight} {column} />
