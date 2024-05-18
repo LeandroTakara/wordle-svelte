@@ -1,6 +1,6 @@
 import { derived, readable, writable } from 'svelte/store'
 import WordleGame, { LETTERS_STATES } from './wordleGame.js'
-import WORDS from '../words.js'
+import WORDS from './words.js'
 
 // constants
 const ROWS = 6
@@ -39,13 +39,24 @@ function createWordleStore(rows, columns) {
             } else if (key === ' ') {
                 wordleGame.nextEmptyColumn()
             } else if (key === 'enter') {
-                if (!wordleGame.currentGuessIsCompleted() || wordleGame.guessSent) return
+                if (!wordleGame.isCurrentGuessCompleted() || !WORDS.includes(wordleGame.currentGuess)) {
+                    wordleGameAnimator.play('invalid-word')
+
+                    setTimeout(() => {
+                        wordleGameAnimator.end()
+                    }, 200)
+                    return
+                }
+
+                if (wordleGame.guessSent) return
 
                 wordleGame.sendGuess()
+                wordleGameAnimator.play('reveal')
 
                 // waits for some time before going to the next guess and sets which keys were matched
                 timeoutNextGuess = setTimeout(() => {
                     wordleGame.nextGuess()
+                    wordleGameAnimator.end()
                     set(wordleGame)
                 }, LAST_LETTER_REVEAL_MILLISECONDS)
             } else if (key === 'backspace') {
@@ -63,6 +74,20 @@ function createWordleStore(rows, columns) {
             wordleGame.newGame(getRandomWord())
             set(wordleGame)
             clearTimeout(timeoutNextGuess)
+        }
+    }
+}
+
+function createWordleAnimator() {
+    const { subscribe, set } = writable('')
+
+    return {
+        subscribe,
+        play: function(animationName) {
+            set(animationName)
+        },
+        end: function() {
+            set('')
         }
     }
 }
@@ -98,5 +123,6 @@ export const keysMatches = derived(wordleGame, $wordleGame => {
 
     return keysMatches
 })
+export const wordleGameAnimator = createWordleAnimator()
 export const REVEAL_TIME = readable(REVEAL_TIME_MILLISECONDS)
 export const REVEAL_DELAY_TIME = readable(REVEAL_DELAY_TIME_MILLISECONDS)

@@ -1,4 +1,5 @@
 <script>
+    export let row
     export let column
     export let letter
     export let state
@@ -6,7 +7,7 @@
 
     import { fade } from 'svelte/transition'
     // stores
-    import { wordleGame, REVEAL_TIME, REVEAL_DELAY_TIME } from '$lib/wordleStore.js'
+    import { wordleGame, wordleGameAnimator, REVEAL_TIME, REVEAL_DELAY_TIME } from '$lib/wordleStore.js'
     // wordle
     import { LETTERS_STATES } from '$lib/wordleGame.js'
 
@@ -19,21 +20,23 @@
         [LETTERS_STATES.GUESSING]: 'guessing',
     }
 
-    let bgCSSClass = null
+    let bgCSSClass = ''
+    let revealing = false
 
-    // sets the value of the 'bgCSSClass' variable, it is done like this, because of the reveal animation
-    $: if (state === LETTERS_STATES.GUESSING || state === LETTERS_STATES.NOT_GUESSED) {
-        bgCSSClass = CSSClasses[state]
-    } else {
-        // waits for some time to make a wave effect together with the components in the same row
+    $: if ($wordleGameAnimator === 'reveal' && row === $wordleGame.currentRow) {
         setTimeout(() => {
+            revealing = true
             bgCSSClass = CSSClasses[state]
         }, $REVEAL_DELAY_TIME * column)
+    } else {
+        bgCSSClass = CSSClasses[state]
+        revealing = false
     }
 </script>
 
 <div
     class="letter {bgCSSClass}"
+    class:revealing
     class:highlight
     style:animation-duration='{$REVEAL_TIME}ms'
 >
@@ -55,7 +58,6 @@
         width: 50px;
         height: 50px;
         border: solid black 3px;
-        /* border-radius: 5px; */
         text-transform: uppercase;
         color: white;
         background-color: var(--bg-color);
@@ -68,14 +70,8 @@
             cursor: pointer;
         }
         
-        &.highlight::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            background-color: white;
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
+        &.highlight {
+            border-bottom-width: 6px;
         }
 
         &.not-guessed {
@@ -88,7 +84,6 @@
             border: none;
             cursor: default;
             user-select: none;
-            animation: reveal;
         }
 
         &.wrong {
@@ -96,7 +91,6 @@
             border: none;
             cursor: default;
             user-select: none;
-            animation: reveal;
         }
         
         &.wrong-position {
@@ -104,6 +98,9 @@
             border: none;
             cursor: default;
             user-select: none;
+        }
+
+        &.revealing {
             animation: reveal;
         }
     }

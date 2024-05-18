@@ -1,12 +1,12 @@
 <script>
     import '../global.css'
-    import { fly } from 'svelte/transition'
+    import { fly, fade } from 'svelte/transition'
     // components
     import Wordle from './Wordle.svelte'
     import Keyboard from './Keyboard.svelte'
     import WordleResult from './WordleResult.svelte'
     // stores
-    import { wordleGame } from '$lib/wordleStore.js'
+    import { wordleGame, wordleGameAnimator } from '$lib/wordleStore.js'
 
     $: isPlaying = $wordleGame.isPlaying
 
@@ -35,6 +35,12 @@
                 <div class="wordle">
                     <Wordle />
                 </div>
+
+                {#if $wordleGameAnimator === 'invalid-word'}
+                    <div class="invalid-word" out:fade={{ delay: 1000, duration: 0 }}>
+                        <span>Invalid word</span>
+                    </div>    
+                {/if}
 
                 <Keyboard on:chooseKey={event => handleKeyAction(event.detail.key)} />
             </div>
@@ -97,13 +103,21 @@
     .wordle-container {
         display: flex;
         flex-direction: column;
-        row-gap: 50px;
+        justify-content: space-between;
+        align-items: center;
         height: 100%;
     }
 
     .wordle {
         display: flex;
         justify-content: center;
+    }
+
+    .invalid-word {
+        padding: 4px 10px;
+        border-radius: 10px;
+        background-color: red;
+        color: white;
     }
 
     .results-container {

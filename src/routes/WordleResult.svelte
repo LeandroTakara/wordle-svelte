@@ -11,7 +11,9 @@
 
 <div class="results">
     <h2>Results</h2>
-    <span class="result-message">{message}</span>
+    <span class="game-result">{message}</span>
+
+    <p class="game-correct-word">The word was: {$wordleGame.correctGuess}</p>
 
     <div class="mini-wordle">
         <WordleDisplay />
@@ -35,12 +37,17 @@
         color: white;
     }
 
-    .result-message {
+    .game-result {
+        color: white;
+        margin-top: 10px;
+    }
+
+    .game-correct-word {
         color: white;
     }
 
     .mini-wordle {
-        margin: 30px 0;
+        margin: 10px 0 20px;
     }
 
     .btn {
