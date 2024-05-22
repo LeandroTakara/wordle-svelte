@@ -1,11 +1,14 @@
 <script>
     import { createEventDispatcher } from 'svelte'
 
-    import { KEYBOARD_ALPHABETICALLY } from '$lib/constants.js'
+    import { KEYBOARD_TYPES } from '$lib/constants.js'
     // stores
     import { keysMatches } from '$lib/wordleStore.js'
+    import { settingsStore } from '$lib/settingsStore.js'
     // wordle
     import { LETTERS_STATES } from '$lib/wordleGame.js'
+
+    $: keyboard = KEYBOARD_TYPES[$settingsStore.keyboard]
 
     // maps a letter state to a CSS class
     const KEYS_STATES = {
@@ -28,13 +31,13 @@
     }
 
     function getKey(key) {
-        if (key === 'backspace') return ''
+        if (key === 'backspace') return '<i class="fa-solid fa-delete-left"></i>'
         return key
     }
 </script>
 
 <div class="keyboard">
-    {#each KEYBOARD_ALPHABETICALLY as keyboardRow}
+    {#each keyboard as keyboardRow}
         <div class="keyboard-row">
             {#each keyboardRow as keyboardKey}
                 {#key $keysMatches[keyboardKey]}
@@ -42,8 +45,8 @@
                         type="button"
                         class="key {getCSSClass(keyboardKey)}"
                         on:click={() => chooseKey(keyboardKey) }
-                        >
-                        {getKey(keyboardKey)}
+                    >
+                        {@html getKey(keyboardKey)}
                     </button>
                 {/key}
             {/each}
@@ -60,6 +63,7 @@
 
     .keyboard-row {
         display: flex;
+        justify-content: center;
         column-gap: 3px;
     }
 
@@ -98,29 +102,6 @@
     }
 
     .key.backspace-key {
-        position: relative;
         flex-grow: 1;
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 40%;
-            translate: -50% -50%;
-            border-right: solid white 15px;
-            border-top: solid transparent 11px;
-            border-bottom: solid transparent 11px;
-        }
-
-        &:after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 60%;
-            translate: -50% -50%;
-            background-color: white;
-            width: 30%;
-            height: 7px;
-        }
     }
 </style>

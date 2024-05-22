@@ -16,6 +16,17 @@ const KEYBOARD_ALPHABETICALLY = Object.freeze([
     Object.freeze(['backspace', 'u', 'v', 'w', 'x', 'y', 'z', 'enter']),
 ])
 
+const KEYBOARD_QWERTY = Object.freeze([
+    Object.freeze(['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p']),
+    Object.freeze(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']),
+    Object.freeze(['backspace', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'enter']),
+])
+
+const KEYBOARD_TYPES = Object.freeze({
+    'Alphabetically': KEYBOARD_ALPHABETICALLY,
+    'QWERTY': KEYBOARD_QWERTY,
+})
+
 export {
     MAX_GUESSES,
     MAX_LETTERS,
@@ -29,5 +40,5 @@ export {
 
     LETTERS,
 
-    KEYBOARD_ALPHABETICALLY,
+    KEYBOARD_TYPES
 }

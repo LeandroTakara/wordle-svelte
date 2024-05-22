@@ -3,9 +3,11 @@
     import { onMount } from 'svelte'
     import { fly, fade } from 'svelte/transition'
     // components
+    import Header from './Header.svelte'
     import Wordle from './Wordle.svelte'
     import Keyboard from './Keyboard.svelte'
     import WordleResult from './WordleResult.svelte'
+    import Settings from './Settings.svelte'
     // stores
     import { wordleGame, wordleGameAnimator } from '$lib/wordleStore.js'
 
@@ -13,11 +15,13 @@
     
     import { CHANGE_SCREEN_TIME, CHANGE_SCREEN_DELAY_TIME } from '$lib/constants.js'
 
-    let jsConfetti
-
     onMount(() => {
         jsConfetti = new JSConfetti()
     })
+
+    let jsConfetti
+
+    let seeSettings = false
 
     $: isPlaying = $wordleGame.isPlaying
 
@@ -32,15 +36,12 @@
     }
 </script>
 
+{#if seeSettings}
+    <Settings on:closeSettings={() => seeSettings = false}/>
+{/if}
+
 <div class="wrapper">
-    <header>
-        <h1>
-            <span class="big-title-word">Wordle</span>
-            <span class="small-title-word">made with</span>
-            <img src="./svelte_logo.png" alt="svelte logo" class="svelte-logo">
-            <span class="big-title-word svelte">Svelte</span>
-        </h1>
-    </header>
+    <Header on:openSettings={() => seeSettings = true}/>
 
     <main>
         {#if isPlaying}
@@ -81,32 +82,6 @@
         flex-direction: column;
         height: 100dvh;
         overflow: hidden;
-    }
-
-    header {
-        position: relative;
-        padding: 10px 20px;
-        background-color: rgb(81, 81, 81);
-        box-shadow: 0 5px 8px 3px rgba(0, 0, 0, 0.1);
-        color: white;
-        text-align: center;
-    }
-
-    .small-title-word {
-        font-size: 1rem;
-    }
-
-    .big-title-word {
-        font-size: 2rem;
-    }
-
-    .svelte-logo {
-        height: 30px;
-        vertical-align: middle;
-    }
-
-    .svelte {
-        color: rgb(255, 91, 41);
     }
 
     main {
