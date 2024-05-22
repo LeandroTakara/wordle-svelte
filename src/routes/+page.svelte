@@ -1,5 +1,6 @@
 <script>
     import '../global.css'
+    import { onMount } from 'svelte'
     import { fly, fade } from 'svelte/transition'
     // components
     import Wordle from './Wordle.svelte'
@@ -8,7 +9,23 @@
     // stores
     import { wordleGame, wordleGameAnimator } from '$lib/wordleStore.js'
 
+    import JSConfetti from 'js-confetti'
+    
+    import { CHANGE_SCREEN_TIME, CHANGE_SCREEN_DELAY_TIME } from '$lib/constants.js'
+
+    let jsConfetti
+
+    onMount(() => {
+        jsConfetti = new JSConfetti()
+    })
+
     $: isPlaying = $wordleGame.isPlaying
+
+    $: if ($wordleGame.hasWon()) {
+        jsConfetti.addConfetti({ confettiNumber: 100, confettiRadius: 5 })
+    } else if ($wordleGame.hasLost()) {
+        jsConfetti.addConfetti({ confettiNumber: 100, emojis: ['😓', '😔', '😭'], emojiSize: 40 })
+    }
 
     function handleKeyAction(key) {
         wordleGame.sendKey(key)
@@ -29,8 +46,8 @@
         {#if isPlaying}
             <div
                 class="wordle-container"
-                in:fly={{ y: 200, delay: 1000, duration: 1000 }}
-                out:fly={{ y: 200, delay: 1000, duration: 1000 }}
+                in:fly={{ y: 200, delay: CHANGE_SCREEN_DELAY_TIME, duration: CHANGE_SCREEN_TIME }}
+                out:fly={{ y: 200, delay: CHANGE_SCREEN_DELAY_TIME, duration: CHANGE_SCREEN_TIME }}
             >
                 <div class="wordle">
                     <Wordle />
@@ -47,8 +64,8 @@
         {:else}
             <div
                 class="results-container"
-                in:fly={{ y: 200, delay: 2000, duration: 1000 }}
-                out:fly={{ y: 200, duration: 1000 }}
+                in:fly={{ y: 200, delay: 2 * CHANGE_SCREEN_DELAY_TIME, duration: CHANGE_SCREEN_TIME }}
+                out:fly={{ y: 200, duration: CHANGE_SCREEN_TIME }}
             >
                 <WordleResult />
             </div>

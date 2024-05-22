@@ -1,5 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
+
+    import { KEYBOARD_ALPHABETICALLY } from '$lib/constants.js'
     // stores
     import { keysMatches } from '$lib/wordleStore.js'
     // wordle
@@ -18,49 +20,55 @@
     function chooseKey(key) {
         dispatch('chooseKey', { key })
     }
+
+    function getCSSClass(key) {
+        if (key === 'backspace') return 'backspace-key'
+        if (key === 'enter') return 'enter-key'
+        return KEYS_STATES[$keysMatches[key]]
+    }
+
+    function getKey(key) {
+        if (key === 'backspace') return ''
+        return key
+    }
 </script>
 
 <div class="keyboard">
-    {#each $keysMatches as { key, state }}
-        <button
-            type="button"
-            class="key {KEYS_STATES[state]}"
-            on:click={() => chooseKey(key) }
-        >
-            <span>{key}</span>
-        </button>
+    {#each KEYBOARD_ALPHABETICALLY as keyboardRow}
+        <div class="keyboard-row">
+            {#each keyboardRow as keyboardKey}
+                {#key $keysMatches[keyboardKey]}
+                    <button
+                        type="button"
+                        class="key {getCSSClass(keyboardKey)}"
+                        on:click={() => chooseKey(keyboardKey) }
+                        >
+                        {getKey(keyboardKey)}
+                    </button>
+                {/key}
+            {/each}
+        </div>
     {/each}
-
-    <button
-        type="button"
-        class="key backspace-key"
-        on:click={() => chooseKey('backspace')}
-    >
-    </button>
-
-    <button
-        type="button"
-        class="key enter-key"
-        on:click={() => chooseKey('enter')}
-    >
-        enter
-    </button>
 </div>
 
 <style>
     .keyboard {
-        display: grid;
-        grid-template-columns: repeat(10, 50px);
-        grid-template-rows: repeat(3, 50px);
-        gap: 5px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 3px;
+    }
+
+    .keyboard-row {
+        display: flex;
+        column-gap: 3px;
     }
 
     .key {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 100%;
-        height: 100%;
+        width: 50px;
+        height: 50px;
         text-transform: uppercase;
         color: white;
         font-weight: 600;
@@ -86,19 +94,19 @@
     }
 
     .key.enter-key {
-        grid-row-start: 3;
-        grid-column: 9 / span 2;
+        flex-grow: 1;
     }
 
     .key.backspace-key {
         position: relative;
-        grid-row-start: 3;
-        grid-column: 1 / span 2;
+        flex-grow: 1;
 
         &::before {
             content: '';
             position: absolute;
-            left: 35%;
+            top: 50%;
+            left: 40%;
+            translate: -50% -50%;
             border-right: solid white 15px;
             border-top: solid transparent 11px;
             border-bottom: solid transparent 11px;
@@ -107,9 +115,11 @@
         &:after {
             content: '';
             position: absolute;
-            left: 45%;
+            top: 50%;
+            left: 60%;
+            translate: -50% -50%;
             background-color: white;
-            width: 30px;
+            width: 30%;
             height: 7px;
         }
     }

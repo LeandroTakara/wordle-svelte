@@ -53,6 +53,14 @@ class WordleGame {
         return this.guesses[this.#currentRow]
     }
 
+    hasWon() {
+        return this.gameState === GAME_STATES.WIN
+    }
+
+    hasLost() {
+        return this.gameState === GAME_STATES.LOSE
+    }
+
     #createGuessArray() {
         return new Array(this.columns).fill('')
     }
@@ -110,9 +118,8 @@ class WordleGame {
     }
 
     nextGuess() {
-        this.#checkGameState()
-
         if (this.isPlaying) {
+            this.#checkGameState()
             this.guessSent = false
             this.#currentRow++
             this.#currentColumn = 0

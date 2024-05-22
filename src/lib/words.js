@@ -1,4 +1,4 @@
-export default [
+export default Object.freeze([
     'aback',
     'abase',
     'abate',
@@ -2314,4 +2314,4 @@ export default [
     'zebra',
     'zesty',
     'zonal',
-]
+])
