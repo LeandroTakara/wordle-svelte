@@ -8,7 +8,7 @@ const LAST_LETTER_REVEAL_TIME = REVEAL_TIME + REVEAL_DELAY_TIME * (MAX_LETTERS -
 const CHANGE_SCREEN_TIME = 1000
 const CHANGE_SCREEN_DELAY_TIME = 1000
 
-const LETTERS = 'abcdefghijklmnopqrstuvwxyz'
+const LETTERS = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'])
 
 const KEYBOARD_ALPHABETICALLY = Object.freeze([
     Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']),

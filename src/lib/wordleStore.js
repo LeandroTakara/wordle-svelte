@@ -36,6 +36,7 @@ function createWordleStore(rows, columns) {
                     setTimeout(() => {
                         wordleGameAnimator.end()
                     }, 200)
+
                     return
                 }
 

@@ -13,7 +13,7 @@
 
     import JSConfetti from 'js-confetti'
     
-    import { CHANGE_SCREEN_TIME, CHANGE_SCREEN_DELAY_TIME } from '$lib/constants.js'
+    import { CHANGE_SCREEN_TIME, CHANGE_SCREEN_DELAY_TIME, LETTERS } from '$lib/constants.js'
 
     onMount(() => {
         jsConfetti = new JSConfetti()
@@ -33,6 +33,21 @@
 
     function handleKeyAction(key) {
         wordleGame.sendKey(key)
+    }
+
+    function handleKeyDown(event) {
+        const key = event.key.toLowerCase()
+
+        if (document.activeElement === document.body) {
+            handleKeyAction(key)
+        } else {
+            const KEYS = [...LETTERS, 'arrowleft', 'arrowright', ' ', 'backspace']
+
+            if (KEYS.includes(key)) {
+                document.activeElement.blur()
+                handleKeyAction(key)
+            }
+        }
     }
 </script>
 
@@ -74,7 +89,7 @@
     </main>
 </div>
 
-<svelte:window on:keydown={event => handleKeyAction(event.key.toLowerCase())} />
+<svelte:window on:keydown={handleKeyDown} />
 
 <style>
     .wrapper {
