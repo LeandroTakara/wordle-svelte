@@ -23,32 +23,29 @@
     function chooseKey(key) {
         dispatch('chooseKey', { key })
     }
-
-    function getCSSClass(key) {
-        if (key === 'backspace') return 'backspace-key'
-        if (key === 'enter') return 'enter-key'
-        return KEYS_STATES[$keysMatches[key]]
-    }
-
-    function getKey(key) {
-        if (key === 'backspace') return '<i class="fa-solid fa-delete-left"></i>'
-        return key
-    }
 </script>
 
 <div class="keyboard">
-    {#each keyboard as keyboardRow}
+    {#each keyboard as keyboardRow, i}
         <div class="keyboard-row">
-            {#each keyboardRow as keyboardKey}
-                {#key $keysMatches[keyboardKey]}
-                    <button
-                        type="button"
-                        class="key {getCSSClass(keyboardKey)}"
-                        on:click={() => chooseKey(keyboardKey) }
-                    >
-                        {@html getKey(keyboardKey)}
-                    </button>
-                {/key}
+            {#each keyboardRow as keyboardKey, j}
+                {@const CSSClass = (function() {
+                    if (keyboardKey === 'backspace') return 'backspace-key'
+                    if (keyboardKey === 'enter') return 'enter-key'
+                    return KEYS_STATES[$keysMatches[keyboardKey]]
+                })()}
+
+                <button
+                    type="button"
+                    class="key {CSSClass}"
+                    on:click={() => chooseKey(keyboardKey) }
+                >
+                    {#if keyboardKey === 'backspace'}
+                        <i class="fa-solid fa-delete-left"></i>
+                    {:else}
+                        {keyboardKey}
+                    {/if}
+                </button>
             {/each}
         </div>
     {/each}

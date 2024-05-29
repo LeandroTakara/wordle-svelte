@@ -4,15 +4,11 @@ import WORDS from './words.js'
 import { LETTERS, MAX_GUESSES, MAX_LETTERS, LAST_LETTER_REVEAL_TIME } from './constants.js'
 
 function createWordleStore(rows, columns) {
-    function getRandomWord() {
-        return WORDS[Math.floor(Math.random() * WORDS.length)]
-    }
+    const getRandomWord = () => WORDS[Math.floor(Math.random() * WORDS.length)]
 
     let timeoutNextGuess = null
 
-    const correctGuess = getRandomWord()
-
-    const wordleGame = new WordleGame(rows, columns, correctGuess)
+    const wordleGame = new WordleGame(rows, columns, getRandomWord())
 
     const { subscribe, set } = writable(wordleGame)
 
@@ -44,6 +40,12 @@ function createWordleStore(rows, columns) {
 
                 wordleGame.sendGuess()
                 wordleGameAnimator.play('reveal')
+                localStorage.setItem('svelte-wordle', JSON.stringify({
+                    guesses: wordleGame.guesses,
+                    guessesMatches: wordleGame.guessesMatches,
+                    correctGuess: wordleGame.correctGuess
+                }))
+    
 
                 // waits for some time before going to the next guess and sets which keys were matched
                 timeoutNextGuess = setTimeout(() => {
@@ -65,6 +67,7 @@ function createWordleStore(rows, columns) {
         },
         newGame: function() {
             wordleGame.newGame(getRandomWord())
+
             set(wordleGame)
             clearTimeout(timeoutNextGuess)
         }
@@ -96,7 +99,6 @@ export const keysMatches = derived(wordleGame, $wordleGame => {
     }
 
     // converts all the digitable letters into an object
-    // const keysMatches = LETTERS.split('').map(key => ({ key, state: LETTERS_STATES.NOT_GUESSED }))
     const keysMatches = {}
 
     for (const letter of LETTERS) {
@@ -108,9 +110,6 @@ export const keysMatches = derived(wordleGame, $wordleGame => {
         const matches = $wordleGame.getGuessMatch(row)
 
         for (let column = 0; column < $wordleGame.columns; column++) {
-            // const keyMatch = keysMatches.find(keyMatch => keyMatch.key === letters[column])
-            const keyMatch = keysMatches[letters[column]]
-
             // sets how close the key is from the correct answer, because the KEY_STATES map how close the letter is,
             // we can just compare if the matches[column] is better than the current value (keyMatch.state),
             // thus saving the best value for displaying on the keyboard

@@ -2,9 +2,9 @@
     import { onMount } from 'svelte'
     import { fly, fade } from 'svelte/transition'
     // components
-    import Wordle from './Wordle.svelte'
-    import Keyboard from './Keyboard.svelte'
-    import WordleResult from './WordleResult.svelte'
+    import Wordle from '../Wordle.svelte'
+    import Keyboard from '../Keyboard.svelte'
+    import WordleResult from '../WordleResult.svelte'
     // stores
     import { wordleGame, wordleGameAnimator } from '$lib/wordleStore.js'
 
@@ -54,6 +54,7 @@
             out:fly={{ y: 200, delay: CHANGE_SCREEN_DELAY_TIME, duration: CHANGE_SCREEN_TIME }}
         >
             <div class="wordle">
+                <Wordle />
                 <Wordle />
             </div>
 
