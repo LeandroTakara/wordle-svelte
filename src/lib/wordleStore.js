@@ -39,13 +39,7 @@ function createWordleStore(rows, columns) {
                 if (wordleGame.guessSent) return
 
                 wordleGame.sendGuess()
-                wordleGameAnimator.play('reveal')
-                localStorage.setItem('svelte-wordle', JSON.stringify({
-                    guesses: wordleGame.guesses,
-                    guessesMatches: wordleGame.guessesMatches,
-                    correctGuess: wordleGame.correctGuess
-                }))
-    
+                wordleGameAnimator.play('reveal')    
 
                 // waits for some time before going to the next guess and sets which keys were matched
                 timeoutNextGuess = setTimeout(() => {
