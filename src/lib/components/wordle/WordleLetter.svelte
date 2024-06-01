@@ -1,21 +1,27 @@
 <script>
-    export let row
     export let column
     export let letter
     export let state
     export let highlight
 
+    import { createEventDispatcher } from 'svelte'
+    // transition functions
     import { fade } from 'svelte/transition'
-
+    // constants
     import { REVEAL_TIME, REVEAL_DELAY_TIME } from '$lib/constants.js'
-
     // stores
-    import { wordleGame, wordleGameAnimator } from '$lib/wordleStore.js'
-    // wordle
-    import { LETTERS_STATES } from '$lib/wordleGame.js'
+    import { ANIMATIONS, wordleAnimator } from '$lib/stores/wordleAnimator.js'
+
+    import { LETTERS_STATES } from '$lib/wordle/wordle.js'
+
+    function chooseColumn(column) {
+        dispatch('chooseColumn', { column })
+    }
+
+    const dispatch = createEventDispatcher()
 
     // maps a letter state to a CSS class
-    const CSSClasses = {
+    const CSS_CLASSES = {
         [LETTERS_STATES.CORRECT]: 'correct',
         [LETTERS_STATES.WRONG]: 'wrong',
         [LETTERS_STATES.WRONG_POSITION]: 'wrong-position',
@@ -23,16 +29,24 @@
         [LETTERS_STATES.GUESSING]: 'guessing',
     }
 
-    let bgCSSClass = ''
+    const STATES_TO_ANIMATE = [LETTERS_STATES.CORRECT, LETTERS_STATES.WRONG, LETTERS_STATES.WRONG_POSITION]
+
+    let prevState = state
+    $: bgCSSClass = CSS_CLASSES[prevState]
+
     let revealing = false
 
-    $: if ($wordleGameAnimator === 'reveal' && row === $wordleGame.currentRow) {
-        setTimeout(() => {
-            revealing = true
-            bgCSSClass = CSSClasses[state]
-        }, REVEAL_DELAY_TIME * column)
+    $: if ($wordleAnimator === ANIMATIONS.REVEAL) {
+        const canAnimate = prevState !== state && STATES_TO_ANIMATE.includes(state)
+
+        if (canAnimate) {
+            setTimeout(() => {
+                revealing = true
+                prevState = state
+            }, REVEAL_DELAY_TIME * column)
+        }
     } else {
-        bgCSSClass = CSSClasses[state]
+        prevState = state
         revealing = false
     }
 </script>
@@ -48,7 +62,7 @@
     {/key}
 
     {#if state === LETTERS_STATES.GUESSING}
-        <input class="letter-button" type="button" on:click={() => wordleGame.setColumn(column)}>
+        <input class="letter-button" type="button" on:click={() => chooseColumn(column)}>
     {/if}
 </div>
 

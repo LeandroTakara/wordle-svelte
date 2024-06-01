@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     // stores
-    import { settingsStore } from '$lib/settingsStore.js'
+    import { settingsStore } from '$lib/stores/settings.js'
 
     const dispatch = createEventDispatcher()
 

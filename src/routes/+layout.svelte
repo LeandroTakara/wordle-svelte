@@ -1,8 +1,8 @@
 <script>
     import '../global.css'
-
-    import Header from './Header.svelte'
-    import Settings from './Settings.svelte'
+    // components
+    import Header from '$lib/components/Header.svelte'
+    import Settings from '$lib/components/Settings.svelte'
 
     let seeSettings = false
 </script>
